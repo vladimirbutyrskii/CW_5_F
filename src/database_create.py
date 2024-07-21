@@ -1,6 +1,6 @@
 from src.utils import get_id_employees
 from src.utils import get_vacancies
-from src.settings import hh_company_names, employee_API, vacancies_API
+from src.settings import COMPANY_NAMES, EMPLOYEE_API, VACANCIES_API
 import psycopg2
 
 
@@ -11,9 +11,9 @@ def create_db(vacancy=None):
     :return:
     """
     # получение id компаний по их названиям
-    id_employees_list = get_id_employees(hh_company_names, employee_API)
+    id_employees_list = get_id_employees(COMPANY_NAMES, EMPLOYEE_API)
     # получение вакансий для каждой из выбранных компаний-работодателей
-    get_vacancy_list = get_vacancies(id_employees_list, vacancies_API)
+    get_vacancy_list = get_vacancies(id_employees_list, VACANCIES_API)
 
     #  параметры базы данных Postgres SQL.
     try:
