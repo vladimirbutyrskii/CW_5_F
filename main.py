@@ -4,7 +4,11 @@ from src.database_create import create_db
 
 
 def main(db_instance: DBManager) -> None:
-    """Функция выполнения программы"""
+    """
+    Управление работой всех функций проекта
+    :param db_instance:
+    :return:
+    """
 
     print(f"\nВыбрать один из пунктов меню:")
     user_answer = 0

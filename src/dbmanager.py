@@ -27,11 +27,10 @@ class DataBase(ABC):
 
 
 class DBManager(DataBase):
-    """Класс для работы с существующей базой данных на localhost"""
+    """Класс для работы с БД"""
 
     def __init__(self, host='localhost', database='CW_5', port=5432, username='postgres', password='12345') -> None:
-        """Именные параметры уже внутри функции,
-        однако их можно изменить на свои при создании экземпляра класса."""
+
         self.host = host
         self.database = database
         self.port = port
@@ -50,13 +49,13 @@ class DBManager(DataBase):
             print(f"Ошибка соединения с базой данных. Проверьте введенные настройки.")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Выполняет коммиты и закрытие Базы данных"""
+        """Выполняет коммиты и закрытие БД"""
         self.conn.commit()
         self.conn.close()
 
 
     def get_companies_and_vacancies_count(self):
-        """Печатает и возвращает список всех компаний и количество вакансий у каждой компании."""
+        """Формирует и выдает на консоль список всех компаний и количество вакансий у каждой компании."""
 
         cur = self.conn.cursor()
         query = ("SELECT e.company_name, COUNT(v.vacancy_id) as quantity_vacancies "
@@ -71,8 +70,8 @@ class DBManager(DataBase):
 
     def get_all_vacancies(self):
         """
-        получает список всех вакансий с указанием
-        названия компании, названия вакансии и зарплаты и ссылки на вакансию
+        Формирует и выдает на консоль список всех вакансий с указанием
+        названий компании, вакансий, зарплаты и ссылки на вакансию
         :return:
         """
 
@@ -91,7 +90,7 @@ class DBManager(DataBase):
 
     def get_avg_salary(self):
         """
-         получает среднюю зарплату по вакансиям
+         Рассчитывает среднюю зарплату по вакансиям
         :return:
         """
         cur = self.conn.cursor()
@@ -108,7 +107,7 @@ class DBManager(DataBase):
 
     def get_vacancies_with_higher_salary(self):
         """
-         получает список всех вакансий, у которых зарплата выше средней по всем вакансиям
+         Формирует список вакансий, у которых зарплата выше средней по всем вакансиям
         :param self:
         :return:
         """
@@ -129,8 +128,8 @@ class DBManager(DataBase):
 
     def get_vacancies_with_keyword(self):
         """
-         получает список всех вакансий, в названии которых
-         содержатся переданные в метод слова, например python
+         Формирует список вакансий, в названии которых
+         содержатся ключевые слова, вводимые через пробел
         :return:
         """
         print(f"Введите ключевые слова через пробел:")

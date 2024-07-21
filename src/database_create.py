@@ -5,11 +5,17 @@ import psycopg2
 
 
 def create_db(vacancy=None):
-    # Переменная со списком ID компаний, а так же списком вакансий в формате JSON.
+    """
+    создание БД, таблиц и загрузка данных в таблицы
+    :param vacancy:
+    :return:
+    """
+    # получение id компаний по их названиям
     id_employees_list = get_id_employees(hh_company_names, employee_API)
+    # получение вакансий для каждой из выбранных компаний-работодателей
     get_vacancy_list = get_vacancies(id_employees_list, vacancies_API)
 
-    #  Вводим свои локальные параметры базы данных Postgres SQL.
+    #  параметры базы данных Postgres SQL.
     try:
         params = dict(host='localhost',
                       database='CW_5',
@@ -24,7 +30,7 @@ def create_db(vacancy=None):
                 DROP TABLE IF EXISTS employers CASCADE;
                 """)
 
-                # Создаем новые таблицы.
+                # Создаем таблицы.
                 cursor.execute(f"""
         
                     CREATE TABLE vacancies (
@@ -50,6 +56,7 @@ def create_db(vacancy=None):
                      );
         
                     """)
+                # временная таблица для промежуточного хранения данных по компаниям
                 cursor.execute(f""" 
                                 CREATE TEMP TABLE temp_employers(
                                 employer_id INT NOT NULL,
@@ -73,12 +80,10 @@ def create_db(vacancy=None):
 
                         add_employer = (
                             vacancy['employer'].get('id'),
-                            # vacancy['id'],
                             vacancy['employer'].get('name'),
                             vacancy['employer'].get('url'),
                             vacancy['employer'].get('alternate_url'),
                             str(vacancy['employer'].get('logo_urls')),
-                            # vacancy['employer'].get('vacancies_url'),
                             vacancy['employer'].get('accredited_it_employer')
                         )
                         #  добавляем данные в таблицы
@@ -105,6 +110,7 @@ def create_db(vacancy=None):
 
                 cursor.execute(f"""DROP TABLE  temp_employers""")
 
+                # создание вторичного ключа
                 cursor.execute(f"""
                 ALTER TABLE vacancies ADD CONSTRAINT fk_vacancies_employers 
                 FOREIGN KEY(employer_id) REFERENCES employers(employer_id);
